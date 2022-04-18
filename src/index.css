@@ -11,3 +11,33 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.services-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 25px;
+}
+
+.services-title {
+  text-align: center;
+  color: rgb(92, 47, 196);
+}
+
+.singleService {
+  border: 1px solid slateblue;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+}
+
+@media only screen and (max-width:576px) {
+  .services-container {
+    grid-template-columns: repeat(1, 1fr);
+  }
+}
+
+@media only screen and (min-width:577px) and (max-width:992px) {
+  .services-container {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
