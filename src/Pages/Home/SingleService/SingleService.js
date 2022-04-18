@@ -4,7 +4,7 @@ const SingleService = ({ service }) => {
     const { name, img, price, description } = service;
     return (
         <div className='singleService'>
-            <img src={img} alt="Car services" />
+            <img className='w-100' src={img} alt="Car services" />
             <h2>single service {name}</h2>
             <p>Price: ${price}</p>
             <p><small>{description}</small></p>
