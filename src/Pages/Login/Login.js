@@ -55,9 +55,17 @@ const Login = () => {
 
     const resetPassword = async () => {
         const email = emailRef.current.value;
-        await sendPasswordResetEmail(email);
+        // await sendPasswordResetEmail(email);
         // alert('Sent email');
-        toast('send email');
+        // toast('send email');
+        if (email) {
+            await sendPasswordResetEmail(email);
+            // alert('Sent email');
+            toast('send email');
+        }
+        else {
+            toast('please enter your email address')
+        }
     }
 
 
