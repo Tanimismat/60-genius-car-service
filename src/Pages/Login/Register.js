@@ -4,6 +4,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
 import SocialLogin from './SocialLogin';
+import { useUpdateProfile } from 'react-firebase-hooks/auth';
+import { updateEmail } from 'firebase/auth';
 
 const Register = () => {
     const [agree, setAgree] = useState(false)
@@ -14,6 +16,8 @@ const Register = () => {
         loading,
         error,
     ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
+    const [updateProfile, updating, updateError] = useUpdateProfile(auth);
+
 
 
     const nameRef = useRef('');
@@ -26,26 +30,33 @@ const Register = () => {
         navigate('/login')
     }
 
-    const handleRegister = event => {
+    const handleRegister = async (event) => {
         event.preventDefault();
         // console.log(event.target)
 
         const name = nameRef.current.value;
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
-        const agree = checkboxRef.current.checked;
-        if (agree) {
-            createUserWithEmailAndPassword(email, password)
-        }
+
+        await createUserWithEmailAndPassword(email, password)
+        await updateProfile({ displayName: name });
+        alert('Updated profile');
+        navigate('/home')
+
+        // const agree = checkboxRef.current.checked;
+        // if (agree) {
+        //     createUserWithEmailAndPassword(email, password)
+        // }
 
         // const email = event.target.email.value;
         // console.log(event.target.email.value) works in input
-        // console.log(name, email, password);
+        console.log(name, email, password);
 
     }
 
     if (user) {
-        navigate('/home')
+        // navigate('/home')
+        console.log('user', user)
     }
 
     return (
