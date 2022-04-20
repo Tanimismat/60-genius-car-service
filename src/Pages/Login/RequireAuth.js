@@ -2,11 +2,16 @@ import React from 'react';
 import { useAuthState } from 'react-firebase-hooks/auth';
 import { Navigate, useLocation } from 'react-router-dom';
 import auth from '../../firebase.init';
+import Loading from '../Shared/Loading/Loading';
 
 const RequireAuth = ({ children }) => {
     // let auth = useAuth();
-    const [user] = useAuthState(auth);
+    const [user, loading] = useAuthState(auth);
+    console.log('inside require auth', user)
     let location = useLocation();
+    if (loading) {
+        return <Loading></Loading>
+    }
     if (!user) {
         // Redirect them to the /login page, but save the current location they were
         // trying to go to when they were redirected. This allows us to send them
