@@ -5,11 +5,16 @@ import github from '../../images/social/github.png'
 import { useSignInWithGithub, useSignInWithGoogle } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
 import { useNavigate } from 'react-router-dom';
+import Loading from '../Shared/Loading/Loading';
 
 const SocialLogin = () => {
     const [signInWithGoogle, user1, loading1, error1] = useSignInWithGoogle(auth);
     const [signInWithGithub, user2, loading2, error2] = useSignInWithGithub(auth);
     const navigate = useNavigate();
+
+    if (loading1 || loading2) {
+        return <Loading></Loading>
+    }
 
     let errorElement;
     if (error1 || error2) {

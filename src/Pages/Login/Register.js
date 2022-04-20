@@ -6,6 +6,7 @@ import auth from '../../firebase.init';
 import SocialLogin from './SocialLogin';
 import { useUpdateProfile } from 'react-firebase-hooks/auth';
 import { updateEmail } from 'firebase/auth';
+import Loading from '../Shared/Loading/Loading';
 
 const Register = () => {
     const [agree, setAgree] = useState(false)
@@ -17,8 +18,6 @@ const Register = () => {
         error,
     ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
     const [updateProfile, updating, updateError] = useUpdateProfile(auth);
-
-
 
     const nameRef = useRef('');
     const emailRef = useRef('');
@@ -52,6 +51,10 @@ const Register = () => {
         // console.log(event.target.email.value) works in input
         console.log(name, email, password);
 
+    }
+
+    if (loading || updating) {
+        return <Loading></Loading>
     }
 
     if (user) {

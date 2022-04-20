@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
 import SocialLogin from './SocialLogin';
+import Loading from '../Shared/Loading/Loading';
 
 const Login = () => {
     const [
@@ -14,6 +15,7 @@ const Login = () => {
     ] = useSignInWithEmailAndPassword(auth);
 
     const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
+
 
     let errorElement;
     if (error) {
@@ -39,6 +41,9 @@ const Login = () => {
 
     const navigateRegister = event => {
         navigate('/register')
+    }
+    if (loading || sending) {
+        return <Loading></Loading>
     }
 
     if (user) {
