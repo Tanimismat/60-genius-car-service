@@ -1,22 +1,25 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Button, Form } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 import auth from '../../firebase.init';
+import SocialLogin from './SocialLogin';
 
 const Register = () => {
+    const [agree, setAgree] = useState(false)
 
     const [
         createUserWithEmailAndPassword,
         user,
         loading,
         error,
-    ] = useCreateUserWithEmailAndPassword(auth);
+    ] = useCreateUserWithEmailAndPassword(auth, { sendEmailVerification: true });
 
 
     const nameRef = useRef('');
     const emailRef = useRef('');
     const passwordRef = useRef('');
+    const checkboxRef = useRef();
     const navigate = useNavigate()
 
     const navigateLogin = event => {
@@ -30,11 +33,19 @@ const Register = () => {
         const name = nameRef.current.value;
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
+        const agree = checkboxRef.current.checked;
+        if (agree) {
+            createUserWithEmailAndPassword(email, password)
+        }
 
         // const email = event.target.email.value;
         // console.log(event.target.email.value) works in input
-        console.log(name, email, password);
-        createUserWithEmailAndPassword(email, password)
+        // console.log(name, email, password);
+
+    }
+
+    if (user) {
+        navigate('/home')
     }
 
     return (
@@ -54,14 +65,15 @@ const Register = () => {
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="formBasicCheckbox">
-                    <Form.Check type="checkbox" label="Check me out" />
+                    <Form.Check onClick={() => setAgree(!agree)} ref={checkboxRef} type="checkbox" className={agree ? 'text-success' : 'text-danger'} label="Accept terms and condition" />
                 </Form.Group>
 
-                <Button variant="primary" type="submit">
+                <Button disabled={!agree} variant="primary" type="submit">
                     Register
                 </Button>
             </Form>
             <p>Already have an account? <Link to='/login' className='pe-auto text-primary text-decoration-none' onClick={navigateLogin}>Please Login</Link></p>
+            <SocialLogin></SocialLogin>
         </div>
     );
 };

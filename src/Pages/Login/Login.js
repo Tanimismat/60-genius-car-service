@@ -1,25 +1,58 @@
 import React, { useRef } from 'react';
 import { Button, Form } from 'react-bootstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useSendPasswordResetEmail, useSignInWithEmailAndPassword } from 'react-firebase-hooks/auth';
+import auth from '../../firebase.init';
+import SocialLogin from './SocialLogin';
 
 const Login = () => {
+    const [
+        signInWithEmailAndPassword,
+        user,
+        loading,
+        error,
+    ] = useSignInWithEmailAndPassword(auth);
+
+    const [sendPasswordResetEmail, sending] = useSendPasswordResetEmail(auth);
+
+    let errorElement;
+    if (error) {
+        errorElement = <p className='text-danger'>Error: {error?.message}</p>
+    }
 
     const emailRef = useRef('');
     const passwordRef = useRef('');
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    let from = location.state?.from?.pathname || "/";
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
 
-        console.log(email, password)
+        console.log("sign in ", email, password)
+        signInWithEmailAndPassword(email, password)
     };
 
     const navigateRegister = event => {
         navigate('/register')
     }
+
+    if (user) {
+        // navigate('/home')
+        navigate(from, { replace: true });
+    }
+
+    const resetPassword = async () => {
+        const email = emailRef.current.value;
+        await sendPasswordResetEmail(email);
+        alert('Sent email');
+    }
+
+
 
     return (
         <div className='container w-50 mx-auto border border-secondary'>
@@ -43,7 +76,12 @@ const Login = () => {
                 </Button>
 
             </Form>
+            {errorElement}
             <p>New to Genius Car? <Link to='/register' className='pe-auto text-primary text-decoration-none' onClick={navigateRegister}>Please Register</Link></p>
+
+            <p>Forget Password? <Link to='/register' className='pe-auto text-primary text-decoration-none' onClick={resetPassword}>Reset Password</Link></p>
+
+            <SocialLogin></SocialLogin>
         </div>
     );
 };
